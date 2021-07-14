@@ -2,22 +2,46 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Data.SqlClient;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Drawing.Drawing2D;
-namespace MyAutoCompleteTextBox201913709054_FarukAydogan
-{
 
-    // MyAutoCompleteTextBox Sınıfımı Control Sınıfından Kalıtıyoruz ki properties penceresini kullanıp birçok özellikler verelim
-    public partial class MyAutoCompleteTextBox : Control 
+namespace MyCombSort
+{
+    public partial class CombSort : Control
     {
-        public MyAutoCompleteTextBox ( ) //yapıcı metot olan MyAutoCompleteTextBox'u oluşturuyoruz burada control oluşturulurken yapılacakları ekliypruz
+        public CombSort ( )
         {
-            this.Size= new Size(180, 20);
-        } 
+            this.Size= new Size(100,150);
+            
+            InitializeComponent();
+
+
+        }
+        public List<int> dizi = new List<int>();
+        //burada dizimizi list olarak oluşturuyoruz
+        SqlConnection conn = new SqlConnection("Data Source=TC;Initial Catalog=MyCombSort;Integrated Security=True");
+
+        //veri tabanımızı oluşturuyoruz içindeki yazılar ise pc'deki veritabanı bilgileridir
+
+            // veritabanından bilgileri çekip dizi değişkenine kaydetmek içindir
+        private void Read ( )
+        {
+            conn.Open();
+            SqlCommand komut = new SqlCommand("Select *From Data", conn);
+            SqlDataReader read = komut.ExecuteReader();
+         
+           while (read.Read())
+            {
+                dizi.Add (Convert.ToInt32(read["veri"].ToString()));
+            }
+            conn.Close();
+        }
+
         //isimler adında autocomplete özelliğindeki isimleri yazıyoruz
         public string[] isimler = System.IO.File.ReadAllLines(@"C:\Users\faruk\source\repos\MyAutoCompleteTextBox201913709054_FarukAydogan\img\isimler");
         protected static int EDGE_PENDING = 4; //Iconun sol köşeye olan uzaklığı
@@ -27,7 +51,7 @@ namespace MyAutoCompleteTextBox201913709054_FarukAydogan
         protected int iconDrawWidth; //iconun yüksekligi
         protected bool mousePressed; // MyAutoCompleteTextBox basılı olup olmadığını belirlemek için
         ListBox lstBox = new ListBox(); //lstbox adında listbox tanımlıyoruz
-         public  int sayac = 0; // sayac değişkenini oluşturuyoruz çünkü ilk kez kullanılacağında texti boş bir string yapıp gerekli işlemleri yapıyoruz
+        public int sayac = 0; // sayac değişkenini oluşturuyoruz çünkü ilk kez kullanılacağında texti boş bir string yapıp gerekli işlemleri yapıyoruz
         //Kullanıcıyı bilgilendirmek için nitelikler tanımlıyoruz.
 
         //Properties penceresinde Icon özelliği için kullanıcıya bilgi veriyoruz
@@ -48,6 +72,49 @@ namespace MyAutoCompleteTextBox201913709054_FarukAydogan
                 Update(); //kontrolümüzün çizim işlemini yapıyoruz
             }
         }
+
+        static int GetNextGap ( int gap )
+        {
+            //The "shrink factor", empirically shown to be 1.3
+            gap = (gap * 10) / 13;
+            if(gap < 1)
+            {
+                return 1;
+            }
+            return gap;
+        }
+
+        static void Sort ( List<int> array )
+        {
+            int length = array.Count();
+
+            int gap = length;
+
+            //We initialize this as true to enter the while loop.
+            bool swapped = true;
+
+            while(gap != 1 || swapped == true)
+            {
+                gap = GetNextGap(gap);
+
+                //Set swapped as false.  Will go to true when two values are swapped.
+                swapped = false;
+
+                //Compare all elements with current gap 
+                for(int i = 0; i < length - gap; i++)
+                {
+                    if(array[i] > array[i + gap])
+                    {
+                        //Swap
+                        int temp = array[i];
+                        array[i] = array[i + gap];
+                        array[i + gap] = temp;
+
+                        swapped = true;
+                    }
+                }
+            }
+        }
         //varsayılan yapılandırıcı
         //kontrolümüz için varsayılan değerleri veriyoruz  
         //Focus olayı gerçekleştiği zaman tekrar paint mesajı gönderiyoruz
@@ -56,7 +123,10 @@ namespace MyAutoCompleteTextBox201913709054_FarukAydogan
             Invalidate();
             base.OnGotFocus(e);
         }
-
+        protected override void OnClick ( EventArgs e )
+        {
+            base.OnClick(e);
+        }
         //Konrolümüz aktifliğini kaybettiğinde paint mesajı gönderiyoruz  
         protected override void OnLostFocus ( EventArgs e )
         {
@@ -87,7 +157,15 @@ namespace MyAutoCompleteTextBox201913709054_FarukAydogan
                 Capture = true;
                 buttonState = ButtonState.Pushed;//buttonu basılı duruma bilgisini tut 
                 mousePressed = true; //mouse ile tıklandığı bilgisini tut
+                Read();
+                Sort(dizi);
                 Text="";
+                int i = 1;
+                foreach(int diz in dizi)
+                {
+                    Text+=" "+ i+". =  \t" + diz.ToString()+"\n";
+                    i++;
+                }
                 Invalidate();
                 Update();
             }
@@ -104,7 +182,7 @@ namespace MyAutoCompleteTextBox201913709054_FarukAydogan
                 Capture = false;
                 mousePressed = false;
                 buttonState = ButtonState.Normal;
-                Text="";
+               
                 Invalidate();
                 Update();
             }
@@ -155,7 +233,7 @@ namespace MyAutoCompleteTextBox201913709054_FarukAydogan
                 Controls.Add(lstBox);
                 sayac++;
             }
-        } 
+        }
         /// <summary>
         /// tuşa basıldığında eğer sayac ilk kez kullanılıyorsa texti sıfırlar eğer tuş delete yani back tuşu ise stringin sonundaki elemanı siliyor
         /// </summary>
@@ -163,21 +241,21 @@ namespace MyAutoCompleteTextBox201913709054_FarukAydogan
 
         protected override void OnKeyDown ( KeyEventArgs e )
         {
-                if(sayac==0)
+            if(sayac==0)
+            {
+                Text="";
+            }
+            if(e.KeyCode.ToString()=="Back")
+            {
+                if(Text.Length>=1)
                 {
-                    Text="";
+                    Text= Text.Remove(Text.Length-1, 1);
                 }
-                if(e.KeyCode.ToString()=="Back")
-                {
-                    if(Text.Length>=1)
-                    {
-                        Text= Text.Remove(Text.Length-1, 1);
-                    }
-                }
-                else
-                {
-                    Text+= e.KeyCode.ToString();
-                }
+            }
+            else
+            {
+                Text+= e.KeyCode.ToString();
+            }
             Invalidate();
             Update();
 
@@ -193,7 +271,7 @@ namespace MyAutoCompleteTextBox201913709054_FarukAydogan
             DrawText(g);
             if(base.Focused)
                 DrawFocusClues(g);
-          
+
         }
 
         /// <summary>
@@ -202,8 +280,8 @@ namespace MyAutoCompleteTextBox201913709054_FarukAydogan
         /// <param name="g"></param>
         protected virtual void DrawButton ( Graphics g )
         {
-            
-            Rectangle rcButton = new Rectangle(0, 0, this.Width,this.Height); //button çizimi için alan belirliyoruz
+
+            Rectangle rcButton = new Rectangle(0, 0, this.Width, this.Height); //button çizimi için alan belirliyoruz
             ControlPaint.DrawButton(g, rcButton, buttonState);//control paint ile draw button özelliğini kullanıyoruz
         }
 
@@ -220,11 +298,13 @@ namespace MyAutoCompleteTextBox201913709054_FarukAydogan
                 layoutRect.Offset(1, 1);
             //Yazının kontrol üzerindeki konumunu belirliyoruz
             StringFormat fmt = new StringFormat();
-            fmt.Alignment = StringAlignment.Near;
-            fmt.LineAlignment = StringAlignment.Near;
+            fmt.Alignment = StringAlignment.Center;
+            fmt.LineAlignment = StringAlignment.Center;
             SolidBrush textBrush = new SolidBrush(this.ForeColor);
             g.DrawString(Text, Font, textBrush, layoutRect, fmt);
             textBrush.Dispose(); //dispose ile ramdan textbrushı siliyoruz
+
+           
         }
 
         //Konrolümüz üzerine icon çizdiriyoruz 

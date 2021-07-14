@@ -1,6 +1,6 @@
-﻿namespace MyAutoCompleteTextBox201913709054_FarukAydogan
+﻿namespace MyCombSort
 {
-    partial class MyAutoCompleteTextBox
+    partial class CombSort
     {
         /// <summary>
         /// Required designer variable.
@@ -28,21 +28,9 @@
         /// </summary>
         private void InitializeComponent ( )
         {
-            this.customizationControl1 = new DevExpress.XtraBars.Customization.CustomizationControl();
-            this.SuspendLayout();
-            // 
-            // customizationControl1
-            // 
-            this.customizationControl1.Location = new System.Drawing.Point(0, 0);
-            this.customizationControl1.Name = "customizationControl1";
-            this.customizationControl1.Size = new System.Drawing.Size(373, 322);
-            this.customizationControl1.TabIndex = 0;
-            this.ResumeLayout(false);
-
+            components = new System.ComponentModel.Container();
         }
 
         #endregion
-
-        private DevExpress.XtraBars.Customization.CustomizationControl customizationControl1;
     }
 }

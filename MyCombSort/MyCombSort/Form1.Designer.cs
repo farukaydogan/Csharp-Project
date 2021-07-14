@@ -1,4 +1,4 @@
-﻿namespace MyAutoCompleteTextBox201913709054_FarukAydogan
+﻿namespace MyCombSort
 {
     partial class Form1
     {
@@ -28,23 +28,23 @@
         /// </summary>
         private void InitializeComponent ( )
         {
-            this.myAutoCompleteTextBox1 = new MyAutoCompleteTextBox201913709054_FarukAydogan.MyAutoCompleteTextBox();
+            this.combSort1 = new MyCombSort.CombSort();
             this.SuspendLayout();
             // 
-            // myAutoCompleteTextBox1
+            // combSort1
             // 
-            this.myAutoCompleteTextBox1.Location = new System.Drawing.Point(231, 100);
-            this.myAutoCompleteTextBox1.Name = "myAutoCompleteTextBox1";
-            this.myAutoCompleteTextBox1.Size = new System.Drawing.Size(180, 20);
-            this.myAutoCompleteTextBox1.TabIndex = 0;
-            this.myAutoCompleteTextBox1.Text = "myAutoCompleteTextBox1";
+            this.combSort1.Location = new System.Drawing.Point(386, 201);
+            this.combSort1.Name = "combSort1";
+            this.combSort1.Size = new System.Drawing.Size(100, 150);
+            this.combSort1.TabIndex = 0;
+            this.combSort1.Text = "combSort1";
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 450);
-            this.Controls.Add(this.myAutoCompleteTextBox1);
+            this.ClientSize = new System.Drawing.Size(930, 595);
+            this.Controls.Add(this.combSort1);
             this.Name = "Form1";
             this.Text = "Form1";
             this.Load += new System.EventHandler(this.Form1_Load);
@@ -54,6 +54,7 @@
 
         #endregion
 
-        private MyAutoCompleteTextBox myAutoCompleteTextBox1;
+        private CombSort combSort1;
     }
 }
+

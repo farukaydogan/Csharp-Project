@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("MyAutoCompleteTextBox201913709054_FarukAydogan")]
+[assembly: AssemblyTitle("MyCombSort")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("MyAutoCompleteTextBox201913709054_FarukAydogan")]
+[assembly: AssemblyProduct("MyCombSort")]
 [assembly: AssemblyCopyright("Copyright ©  2021")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("e7d02c03-283e-4c73-8523-52f329cb348b")]
+[assembly: Guid("cf2f7183-d973-4a59-ba7a-a6091b76350e")]
 
 // Version information for an assembly consists of the following four values:
 //

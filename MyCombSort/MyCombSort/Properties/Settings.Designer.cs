@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace MyAutoCompleteTextBox201913709054_FarukAydogan.Properties
+namespace MyCombSort.Properties
 {
 
 
