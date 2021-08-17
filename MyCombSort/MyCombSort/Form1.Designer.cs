@@ -33,9 +33,9 @@
             // 
             // combSort1
             // 
-            this.combSort1.Location = new System.Drawing.Point(386, 201);
+            this.combSort1.Location = new System.Drawing.Point(383, 175);
             this.combSort1.Name = "combSort1";
-            this.combSort1.Size = new System.Drawing.Size(100, 150);
+            this.combSort1.Size = new System.Drawing.Size(150, 20);
             this.combSort1.TabIndex = 0;
             this.combSort1.Text = "combSort1";
             // 

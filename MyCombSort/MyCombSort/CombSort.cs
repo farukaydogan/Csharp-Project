@@ -16,30 +16,8 @@ namespace MyCombSort
     {
         public CombSort ( )
         {
-            this.Size= new Size(100,150);
-            
+            this.Size= new Size(150, 20);
             InitializeComponent();
-
-
-        }
-        public List<int> dizi = new List<int>();
-        //burada dizimizi list olarak oluşturuyoruz
-        SqlConnection conn = new SqlConnection("Data Source=TC;Initial Catalog=MyCombSort;Integrated Security=True");
-
-        //veri tabanımızı oluşturuyoruz içindeki yazılar ise pc'deki veritabanı bilgileridir
-
-            // veritabanından bilgileri çekip dizi değişkenine kaydetmek içindir
-        private void Read ( )
-        {
-            conn.Open();
-            SqlCommand komut = new SqlCommand("Select *From Data", conn);
-            SqlDataReader read = komut.ExecuteReader();
-         
-           while (read.Read())
-            {
-                dizi.Add (Convert.ToInt32(read["veri"].ToString()));
-            }
-            conn.Close();
         }
 
         //isimler adında autocomplete özelliğindeki isimleri yazıyoruz
@@ -62,119 +40,14 @@ namespace MyCombSort
         System.ComponentModel.DefaultValue(null)]
 
         //Kullanıcının button için icon belirlemesi için Icon isimli bir özellik tanımlıyoruz
-        public Icon Icon
-        {
-            get { return buttonIcon; }
-            set
-            {
-                buttonIcon = value;
-                Invalidate(); // kontrolümüze paint mesajını gönderiyoruz  
-                Update(); //kontrolümüzün çizim işlemini yapıyoruz
-            }
-        }
-
-        static int GetNextGap ( int gap )
-        {
-            //The "shrink factor", empirically shown to be 1.3
-            gap = (gap * 10) / 13;
-            if(gap < 1)
-            {
-                return 1;
-            }
-            return gap;
-        }
-
-        static void Sort ( List<int> array )
-        {
-            int length = array.Count();
-
-            int gap = length;
-
-            //We initialize this as true to enter the while loop.
-            bool swapped = true;
-
-            while(gap != 1 || swapped == true)
-            {
-                gap = GetNextGap(gap);
-
-                //Set swapped as false.  Will go to true when two values are swapped.
-                swapped = false;
-
-                //Compare all elements with current gap 
-                for(int i = 0; i < length - gap; i++)
-                {
-                    if(array[i] > array[i + gap])
-                    {
-                        //Swap
-                        int temp = array[i];
-                        array[i] = array[i + gap];
-                        array[i + gap] = temp;
-
-                        swapped = true;
-                    }
-                }
-            }
-        }
+        
         //varsayılan yapılandırıcı
         //kontrolümüz için varsayılan değerleri veriyoruz  
-        //Focus olayı gerçekleştiği zaman tekrar paint mesajı gönderiyoruz
-        protected override void OnGotFocus ( EventArgs e )
-        {
-            Invalidate();
-            base.OnGotFocus(e);
-        }
-        protected override void OnClick ( EventArgs e )
-        {
-            base.OnClick(e);
-        }
-        //Konrolümüz aktifliğini kaybettiğinde paint mesajı gönderiyoruz  
-        protected override void OnLostFocus ( EventArgs e )
-        {
-            Invalidate();
-            base.OnLostFocus(e);
-        }
-
-        //Kontolümüz üzerindeki yazı değiştiğinde kontrolümüzü güncelliyoruz
-        protected override void OnTextChanged ( EventArgs e )
-        {
-            Invalidate();
-            base.OnTextChanged(e);
-        }
-
-        //Kontrolümüzün boyutları değiştiğinde kontrolümüzü güncelliyoruz
-        protected override void OnSizeChanged ( EventArgs e )
-        {
-            Invalidate();
-            base.OnSizeChanged(e);
-        }
-
-        //Kullanıcı mouse ile button tıkladığında gerçeleşmesini istediğimiz işlemleri belirliyoruz
-        protected override void OnMouseDown ( MouseEventArgs e )
-        {
-            if(e.Button == MouseButtons.Left) //Eğer sol tuş ise
-            {
-                Focus(); //kontrolü seçili hale getir
-                Capture = true;
-                buttonState = ButtonState.Pushed;//buttonu basılı duruma bilgisini tut 
-                mousePressed = true; //mouse ile tıklandığı bilgisini tut
-                Read();
-                Sort(dizi);
-                Text="";
-                int i = 1;
-                foreach(int diz in dizi)
-                {
-                    Text+=" "+ i+". =  \t" + diz.ToString()+"\n";
-                    i++;
-                }
-                Invalidate();
-                Update();
-            }
-            else //değilse taban sınıf ön tanımlı işlemleri yapsın
-            {
-                base.OnMouseDown(e);
-            }
-        }
-
+      
+            /// <summary>
+            /// degeri 1 e eşitler
+            /// </summary>
+        
         protected override void OnMouseUp ( MouseEventArgs e )
         {
             if(mousePressed && (e.Button == MouseButtons.Left))
@@ -182,7 +55,6 @@ namespace MyCombSort
                 Capture = false;
                 mousePressed = false;
                 buttonState = ButtonState.Normal;
-               
                 Invalidate();
                 Update();
             }
@@ -266,8 +138,7 @@ namespace MyCombSort
         protected virtual void Draw ( Graphics g )
         {
             DrawButton(g);
-            if(buttonIcon != null)
-                DrawIcon(g);
+            
             DrawText(g);
             if(base.Focused)
                 DrawFocusClues(g);
@@ -305,27 +176,6 @@ namespace MyCombSort
             textBrush.Dispose(); //dispose ile ramdan textbrushı siliyoruz
 
            
-        }
-
-        //Konrolümüz üzerine icon çizdiriyoruz 
-        protected virtual void DrawIcon ( Graphics g )
-        {
-            int top = (Height / 2) - (buttonIcon.Height / 2); //icon için top adında üst kısım boyutunu tutuyoruz
-            int height = buttonIcon.Height; //icon için height adında üst kısım boyutunu tutuyoruz
-            int width = buttonIcon.Width; //icon için width adında üst kısım boyutunu tutuyoruz
-            if((top + height) >= Height) //top + heigth formun height'inden büyükse devreye girer
-            {
-                top = EDGE_PENDING;
-                int drawHeight = Height - (2 * EDGE_PENDING);
-                float scale = ((float)drawHeight / (float)height);
-                width = (int)((float)width*scale);
-                height = drawHeight;
-            }
-            Rectangle iconRect = new Rectangle(EDGE_PENDING, top, width, height);
-            if(buttonState == ButtonState.Pushed)
-                iconRect.Offset(1, 1);
-            g.DrawIcon(buttonIcon, iconRect);
-            iconDrawWidth = iconRect.Width;
         }
 
         //kontrolümüz aktif hala geldiğinde üzerine noktalı dikdörtgen (seçili olduğunu belirten) çizdiriyoruz
